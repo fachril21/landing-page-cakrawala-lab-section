@@ -1,0 +1,208 @@
+---
+const groups = [
+  {
+    key: 'lab',
+    label: 'Desain Lab',
+    options: [
+      { value: 'split', label: 'Split' },
+      { value: 'kolom', label: 'Kolom' },
+      { value: 'tab', label: 'Tab' },
+      { value: 'rincian', label: 'Rincian' },
+      { value: 'kontras', label: 'Kontras' },
+    ],
+  },
+  {
+    key: 'showcase',
+    label: 'Desain Showcase',
+    options: [
+      { value: 's1', label: 'Featured' },
+      { value: 's2', label: 'Carousel' },
+      { value: 's3', label: 'Grid' },
+      { value: 's4', label: 'Zigzag' },
+      { value: 'none', label: 'Tanpa' },
+    ],
+  },
+  {
+    key: 'count',
+    label: 'Jumlah project',
+    options: [
+      { value: '1', label: '1' },
+      { value: '3', label: '3' },
+      { value: '6', label: '6' },
+    ],
+  },
+];
+---
+
+<aside class="tw" data-tweak aria-label="Tweak desain">
+  <button type="button" class="tw-toggle" data-tweak-toggle aria-expanded="true" aria-controls="tweak-body">
+    Tweak
+  </button>
+  <div class="tw-body" id="tweak-body" data-tweak-body>
+    {
+      groups.map((g) => (
+        <fieldset class="tw-group">
+          <legend>{g.label}</legend>
+          <div class="tw-chips">
+            {g.options.map((o) => (
+              <button type="button" class="tw-chip" data-tweak-group={g.key} data-tweak-value={o.value} aria-pressed="false">
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+      ))
+    }
+    <p class="tw-note">Pilihan tersimpan di URL, jadi bisa dibagikan.</p>
+  </div>
+</aside>
+
+<style>
+  .tw {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 70;
+    width: min(280px, calc(100vw - 32px));
+    font-family: var(--font-body, Manrope, sans-serif);
+    font-size: 13px;
+    color: #263238;
+  }
+  .tw-toggle {
+    display: block;
+    margin-bottom: 8px;
+    padding: 10px 18px;
+    border-radius: 9999px;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 14px;
+    color: #fff;
+    background: #014860;
+    box-shadow: 0 6px 18px rgba(1, 72, 96, 0.35);
+  }
+  .tw-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #d9dee1;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  }
+  .tw-body[hidden] {
+    display: none;
+  }
+  .tw-group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .tw-group legend {
+    padding: 0;
+    margin-bottom: 6px;
+    font-weight: 700;
+    font-size: 12px;
+    color: #014860;
+  }
+  .tw-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tw-chip {
+    padding: 6px 12px;
+    border-radius: 9999px;
+    border: 1px solid #014860;
+    background: #fff;
+    color: #014860;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease;
+  }
+  .tw-chip:hover {
+    background: #dcf5fb;
+  }
+  .tw-chip[aria-pressed='true'] {
+    background: #014860;
+    color: #fff;
+  }
+  .tw-chip:focus-visible,
+  .tw-toggle:focus-visible {
+    outline: 2px solid #d3b468;
+    outline-offset: 2px;
+  }
+  .tw-note {
+    margin: 0;
+    font-size: 11px;
+    color: #607078;
+  }
+</style>
+
+<script>
+  type Key = 'lab' | 'showcase' | 'count';
+  const DEFAULTS: Record<Key, string> = { lab: 'split', showcase: 's2', count: '3' };
+
+  const root = document.querySelector<HTMLElement>('[data-tweak]');
+  if (root) {
+    const chips = [...root.querySelectorAll<HTMLButtonElement>('[data-tweak-group]')];
+    const valid = (key: Key) => new Set(chips.filter((c) => c.dataset.tweakGroup === key).map((c) => c.dataset.tweakValue!));
+
+    const params = new URLSearchParams(location.search);
+    const state = { ...DEFAULTS };
+    (Object.keys(DEFAULTS) as Key[]).forEach((key) => {
+      const fromUrl = params.get(key);
+      if (fromUrl && valid(key).has(fromUrl)) state[key] = fromUrl;
+    });
+
+    const apply = () => {
+      document
+        .querySelectorAll<HTMLElement>('[data-lab-variant]')
+        .forEach((el) => (el.hidden = el.dataset.labVariant !== state.lab));
+      document
+        .querySelectorAll<HTMLElement>('[data-showcase-variant]')
+        .forEach((el) => (el.hidden = el.dataset.showcaseVariant !== state.showcase));
+      const showcase = document.getElementById('labShowcase');
+      if (showcase) showcase.hidden = state.showcase === 'none';
+      const count = Number(state.count);
+      document
+        .querySelectorAll<HTMLElement>('[data-project-index]')
+        .forEach((el) => (el.hidden = Number(el.dataset.projectIndex) >= count));
+      chips.forEach((c) => c.setAttribute('aria-pressed', String(state[c.dataset.tweakGroup as Key] === c.dataset.tweakValue)));
+
+      const next = new URLSearchParams();
+      (Object.keys(DEFAULTS) as Key[]).forEach((key) => {
+        if (state[key] !== DEFAULTS[key]) next.set(key, state[key]);
+      });
+      const query = next.toString();
+      history.replaceState(null, '', query ? `?${query}` : location.pathname);
+    };
+
+    chips.forEach((chip) =>
+      chip.addEventListener('click', () => {
+        const key = chip.dataset.tweakGroup as Key;
+        state[key] = chip.dataset.tweakValue!;
+        apply();
+        const target = key === 'lab' ? 'lab' : state.showcase === 'none' ? 'lab' : 'labShowcase';
+        document.getElementById(target)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }),
+    );
+
+    const toggle = root.querySelector<HTMLButtonElement>('[data-tweak-toggle]');
+    const body = root.querySelector<HTMLElement>('[data-tweak-body]');
+    const setOpen = (open: boolean) => {
+      if (!toggle || !body) return;
+      body.hidden = !open;
+      toggle.setAttribute('aria-expanded', String(open));
+    };
+    toggle?.addEventListener('click', () => setOpen(body?.hidden ?? false));
+    setOpen(window.matchMedia('(min-width: 1024px)').matches);
+
+    apply();
+  }
+</script>

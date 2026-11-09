@@ -1,0 +1,111 @@
+---
+import Icon from '../Icon.astro';
+import type { LabContent } from '../../data/lab';
+
+interface Props {
+  lab: LabContent;
+}
+const { lab } = Astro.props;
+
+const blocks = [
+  { key: 'work', title: lab.work.title, items: lab.work.items },
+  { key: 'proof', title: lab.proof.title, items: lab.proof.items },
+];
+---
+
+<div class="lr">
+  <header>
+    <h3 class="lab-title lr-name">{lab.name}</h3>
+    <p class="lab-desc">{lab.description}</p>
+  </header>
+
+  {
+    blocks.map((block) => (
+      <section class:list={['lr-block', { 'lr-block--proof': block.key === 'proof' }]}>
+        <h4 class="lab-h4">{block.title}</h4>
+        <ul class="lr-list">
+          {block.items.map((item) => (
+            <li class="lr-row">
+              <div class="lr-label">
+                <div class="lab-icon">
+                  <Icon icon={item.icon} />
+                </div>
+                <p class="lr-title">{item.title}</p>
+              </div>
+              <p class="lr-text">{item.text}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+</div>
+
+<style>
+  .lr {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .lr-name {
+    font-size: clamp(2rem, 1.5rem + 2.2vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .lr-block {
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--lab-line);
+  }
+  .lr-block--proof {
+    background: var(--lab-tint);
+    border-color: transparent;
+  }
+  .lr-list {
+    margin-top: 8px;
+  }
+  .lr-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 16px 0;
+    border-top: 1px solid var(--lab-line);
+  }
+  .lr-block--proof .lr-row {
+    border-top-color: rgba(1, 72, 96, 0.18);
+  }
+  .lr-row:first-child {
+    margin-top: 8px;
+  }
+  .lr-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .lr-block--proof .lab-icon {
+    background: #fff;
+  }
+  .lr-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.3;
+    color: var(--color-black);
+  }
+  .lr-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--lab-ink);
+  }
+  @media (min-width: 768px) {
+    .lr-block {
+      padding: 24px 28px;
+    }
+    .lr-row {
+      grid-template-columns: 5fr 7fr;
+      gap: 28px;
+      align-items: center;
+    }
+  }
+</style>

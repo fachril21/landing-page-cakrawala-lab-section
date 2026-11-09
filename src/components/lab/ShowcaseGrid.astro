@@ -1,0 +1,113 @@
+---
+import Icon from '../Icon.astro';
+import type { LabShowcase } from '../../data/lab';
+
+interface Props {
+  showcase: LabShowcase;
+}
+const { showcase } = Astro.props;
+---
+
+<ul class="s3">
+  {
+    showcase.projects.map((p, i) => (
+      <li class:list={['s3-item', { 's3-item--lead': i === 0 }]} data-project-index={i}>
+        <img
+          class="lab-photo s3-photo"
+          src={p.image.src}
+          alt={p.image.alt}
+          width={p.image.width}
+          height={p.image.height}
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="s3-body">
+          <h4 class="s3-title">{p.title}</h4>
+          <p class="s3-text">{p.description}</p>
+          <a class="s3-link" href={p.url}>
+            {showcase.ctaLabel}
+            <Icon icon="solar:arrow-right-up-linear" />
+          </a>
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .s3 {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px 20px;
+  }
+  .s3-photo {
+    aspect-ratio: 4 / 3;
+  }
+  .s3-body {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .s3-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--color-black);
+  }
+  .s3-text {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--lab-ink);
+  }
+  .s3-link {
+    margin-top: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--lab-blue);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--lab-gold);
+    text-decoration-thickness: 2px;
+  }
+  .s3-link > div {
+    display: inline-flex;
+    font-size: 16px;
+    transition: transform 0.2s ease;
+  }
+  .s3-link:hover > div,
+  .s3-link:focus-visible > div {
+    transform: translate(2px, -2px);
+  }
+  .s3-link:focus-visible {
+    outline: 2px solid var(--lab-gold);
+    outline-offset: 3px;
+  }
+  @media (min-width: 768px) {
+    .s3 {
+      grid-template-columns: 1fr 1fr;
+    }
+    .s3-item--lead {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 24px;
+      align-items: end;
+    }
+    .s3-item--lead .s3-photo {
+      aspect-ratio: 16 / 9;
+    }
+    .s3-item--lead .s3-body {
+      margin-top: 0;
+    }
+    .s3-item--lead .s3-title {
+      font-size: 24px;
+    }
+  }
+</style>

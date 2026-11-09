@@ -12,58 +12,48 @@ import Skills from './sections/Skills.astro';
 import Testimony from './sections/Testimony.astro';
 import Faq from './sections/Faq.astro';
 import CtaBanner from './sections/CtaBanner.astro';
-import SignatureLab from './sections/SignatureLab.astro';
+import LabSection from './lab/LabSection.astro';
+import ShowcaseSection from './lab/ShowcaseSection.astro';
+import TweakPanel from './lab/TweakPanel.astro';
 import FloatingWhatsapp from './FloatingWhatsapp.astro';
 import Footer from './Footer.astro';
 import { seo, sidenavItems } from '../data/program';
-import { signatureLab, type LabPosition } from '../data/signatureLab';
+import { marketingLab } from '../data/lab';
 
 interface Props {
-  /** Where the Signature Lab block sits. Omit for the real page (no lab). */
-  labPosition?: LabPosition;
+  /** Show the Marketing Lab section (and showcase) right after Kurikulum. Omit for the real page. */
+  lab?: boolean;
+  /** Show the Tweak panel and render every design variant so it can switch between them. */
+  tweak?: boolean;
   noindex?: boolean;
   title?: string;
 }
 
-const { labPosition, noindex = false, title = seo.title } = Astro.props;
+const { lab = false, tweak = false, noindex = false, title = seo.title } = Astro.props;
 
-// Sidebar item id that the lab sits right after (column positions only).
-const AFTER: Record<Exclude<LabPosition, 'band'>, string> = {
-  'after-overview': 'overview',
-  'after-why': 'whyDepartment',
-  'after-curriculum': 'curriculum',
-  'after-skills': 'skills',
-};
-
-const labItem = { id: signatureLab.sectionId, title: signatureLab.navTitle };
-const navItems =
-  labPosition && labPosition !== 'band'
-    ? sidenavItems.flatMap((item) => (item.id === AFTER[labPosition] ? [item, labItem] : [item]))
-    : sidenavItems;
-
-const lab = (position: LabPosition) => labPosition === position;
+const labItem = { id: marketingLab.sectionId, title: marketingLab.navTitle };
+const navItems = lab
+  ? sidenavItems.flatMap((item) => (item.id === 'curriculum' ? [item, labItem] : [item]))
+  : sidenavItems;
 ---
 
 <Layout title={title} description={seo.description} canonical={seo.canonical} noindex={noindex}>
   <div class="bg-grey-100">
     <Navbar />
     <ProgramHero />
-    {labPosition === 'band' && <SignatureLab variant="band" />}
     <div class="max-w-[1040px] mx-auto lg:pt-5 pb-6 md:pb-10 overflow-x-hidden px-5 xl:px-0">
       <div class="flex flex-col lg:flex-row w-full min-w-0 justify-between lg:gap-5" id="ProgramSection">
         <SidenavProgram items={navItems} />
         <div class="flex-1 min-w-0 max-w-[calc(1040px_-_40px_-_245px)] pt-6 px-4 md:px-0 md:pt-0 pb-6 md:pb-0">
           <div class="flex flex-col items-start gap-10">
             <Overview />
-            {lab('after-overview') && <SignatureLab />}
             <WhyDepartment />
-            {lab('after-why') && <SignatureLab />}
             <Curriculum />
-            {lab('after-curriculum') && <SignatureLab />}
+            {lab && <LabSection all={tweak} />}
+            {lab && <ShowcaseSection all={tweak} />}
             <JobOpportunity />
             <LearningOutcomes />
             <Skills />
-            {lab('after-skills') && <SignatureLab />}
             <Testimony />
             <Faq />
             <CtaBanner />
@@ -72,6 +62,7 @@ const lab = (position: LabPosition) => labPosition === position;
       </div>
     </div>
     <FloatingWhatsapp />
+    {tweak && <TweakPanel />}
     <div></div>
     <Footer />
   </div>

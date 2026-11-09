@@ -1,0 +1,148 @@
+---
+import Icon from '../Icon.astro';
+import type { LabShowcase } from '../../data/lab';
+
+interface Props {
+  showcase: LabShowcase;
+}
+const { showcase } = Astro.props;
+---
+
+<div class="s2" data-carousel>
+  <ul class="s2-track" data-carousel-track tabindex="0" aria-label={showcase.name}>
+    {
+      showcase.projects.map((p, i) => (
+        <li class="s2-card" data-project-index={i}>
+          <img
+            class="lab-photo s2-photo"
+            src={p.image.src}
+            alt={p.image.alt}
+            width={p.image.width}
+            height={p.image.height}
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="s2-body">
+            <h4 class="s2-title">{p.title}</h4>
+            <p class="s2-text">{p.description}</p>
+            <a class="lab-btn" href={p.url}>
+              {showcase.ctaLabel}
+              <Icon icon="solar:arrow-right-up-linear" />
+            </a>
+          </div>
+        </li>
+      ))
+    }
+  </ul>
+  <div class="s2-nav">
+    <button type="button" class="s2-arrow" data-carousel-prev aria-label="Project sebelumnya">
+      <Icon icon="solar:alt-arrow-left-linear" />
+    </button>
+    <button type="button" class="s2-arrow" data-carousel-next aria-label="Project berikutnya">
+      <Icon icon="solar:alt-arrow-right-linear" />
+    </button>
+  </div>
+</div>
+
+<style>
+  .s2-track {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+  .s2-track::-webkit-scrollbar {
+    display: none;
+  }
+  .s2-track:focus-visible {
+    outline: 2px solid var(--lab-gold);
+    outline-offset: 4px;
+    border-radius: 10px;
+  }
+  .s2-card {
+    flex: 0 0 80%;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--lab-line);
+  }
+  .s2-photo {
+    border-radius: 0;
+    aspect-ratio: 4 / 3;
+  }
+  .s2-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px;
+  }
+  .s2-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 1.3;
+    color: var(--color-black);
+  }
+  .s2-text {
+    flex: 1;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--lab-ink);
+    margin-bottom: 6px;
+  }
+  .s2-nav {
+    margin-top: 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+  .s2-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    cursor: pointer;
+    border: 1px solid var(--lab-blue);
+    background: transparent;
+    color: var(--lab-blue);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .s2-arrow:hover,
+  .s2-arrow:focus-visible {
+    background: var(--lab-blue);
+    color: #fff;
+  }
+  .s2-arrow:focus-visible {
+    outline: 2px solid var(--lab-gold);
+    outline-offset: 2px;
+  }
+  @media (min-width: 768px) {
+    .s2-card {
+      flex-basis: 300px;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-carousel-track]');
+    if (!track) return;
+    const scrollByPage = (dir: number) => {
+      track.scrollBy({ left: dir * track.clientWidth * 0.8, behavior: 'smooth' });
+    };
+    root.querySelector('[data-carousel-prev]')?.addEventListener('click', () => scrollByPage(-1));
+    root.querySelector('[data-carousel-next]')?.addEventListener('click', () => scrollByPage(1));
+  });
+</script>

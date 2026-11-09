@@ -1,0 +1,83 @@
+---
+import Icon from '../Icon.astro';
+import type { LabShowcase } from '../../data/lab';
+
+interface Props {
+  showcase: LabShowcase;
+}
+const { showcase } = Astro.props;
+---
+
+<ul class="s4">
+  {
+    showcase.projects.map((p, i) => (
+      <li class:list={['s4-row', { 's4-row--flip': i % 2 === 1 }]} data-project-index={i}>
+        <img
+          class="lab-photo s4-photo"
+          src={p.image.src}
+          alt={p.image.alt}
+          width={p.image.width}
+          height={p.image.height}
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="s4-body">
+          <h4 class="s4-title">{p.title}</h4>
+          <p class="s4-text">{p.description}</p>
+          <a class="lab-btn" href={p.url}>
+            {showcase.ctaLabel}
+            <Icon icon="solar:arrow-right-up-linear" />
+          </a>
+        </div>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .s4 {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+  .s4-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+  .s4-photo {
+    aspect-ratio: 4 / 3;
+  }
+  .s4-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .s4-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 22px;
+    line-height: 1.25;
+    color: var(--color-black);
+  }
+  .s4-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--lab-ink);
+    margin-bottom: 4px;
+  }
+  @media (min-width: 768px) {
+    .s4-row {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+    .s4-row--flip .s4-photo {
+      order: 2;
+    }
+    .s4-title {
+      font-size: 26px;
+    }
+  }
+</style>

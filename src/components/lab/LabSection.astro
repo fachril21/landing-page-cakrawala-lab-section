@@ -1,0 +1,36 @@
+---
+import '../../styles/lab.css';
+import LabSplit from './LabSplit.astro';
+import LabFlow from './LabFlow.astro';
+import LabTabs from './LabTabs.astro';
+import LabRows from './LabRows.astro';
+import LabContrast from './LabContrast.astro';
+import { marketingLab, type LabVariant } from '../../data/lab';
+
+interface Props {
+  variant?: LabVariant;
+  /** Render every variant (hidden except `variant`) so the Tweak panel can switch between them. */
+  all?: boolean;
+}
+
+const { variant = 'split', all = false } = Astro.props;
+
+const variants = [
+  { id: 'split', Component: LabSplit },
+  { id: 'kolom', Component: LabFlow },
+  { id: 'tab', Component: LabTabs },
+  { id: 'rincian', Component: LabRows },
+  { id: 'kontras', Component: LabContrast },
+] as const;
+const shown = all ? variants : variants.filter((v) => v.id === variant);
+---
+
+<section id={marketingLab.sectionId} class="lab-scope">
+  {
+    shown.map(({ id, Component }) => (
+      <div data-lab-variant={id} hidden={id !== variant}>
+        <Component lab={marketingLab} />
+      </div>
+    ))
+  }
+</section>

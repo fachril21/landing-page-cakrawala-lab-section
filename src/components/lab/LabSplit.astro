@@ -1,0 +1,132 @@
+---
+import Icon from '../Icon.astro';
+import type { LabContent } from '../../data/lab';
+
+interface Props {
+  lab: LabContent;
+}
+const { lab } = Astro.props;
+---
+
+<div class="l1">
+  <div class="l1-head">
+    <h3 class="lab-title l1-name">{lab.name}</h3>
+    <p class="l1-desc">{lab.description}</p>
+  </div>
+  <div class="l1-body">
+    <div>
+      <h4 class="lab-h4">{lab.work.title}</h4>
+      <ol class="l1-list">
+        {
+          lab.work.items.map((item) => (
+            <li class="l1-row">
+              <div class="lab-icon">
+                <Icon icon={item.icon} />
+              </div>
+              <div class="l1-text">
+                <strong>{item.title}</strong>
+                <span>{item.text}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <div class="l1-proof">
+      <h4 class="lab-h4">{lab.proof.title}</h4>
+      <ul class="l1-list">
+        {
+          lab.proof.items.map((item) => (
+            <li class="l1-row">
+              <div class="lab-icon">
+                <Icon icon={item.icon} />
+              </div>
+              <div class="l1-text">
+                <strong>{item.title}</strong>
+                <span>{item.text}</span>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .l1 {
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--lab-line);
+    box-shadow:
+      0 1px 2px rgba(1, 72, 96, 0.06),
+      0 10px 28px rgba(1, 72, 96, 0.1);
+  }
+  .l1-head {
+    padding: 28px 20px;
+    background: var(--lab-blue) url(/images/program/bg-job-opportunity.png) no-repeat left / cover;
+  }
+  .l1-name {
+    color: #fff;
+    font-size: clamp(2rem, 1.5rem + 2.2vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .l1-desc {
+    margin-top: 10px;
+    max-width: 46ch;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--lab-on-blue);
+  }
+  .l1-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 20px;
+  }
+  .l1-list {
+    margin-top: 16px;
+  }
+  .l1-row {
+    display: flex;
+    gap: 14px;
+    padding: 14px 0;
+    border-top: 1px solid var(--lab-line);
+  }
+  .l1-row:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+  .l1-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--lab-ink);
+  }
+  .l1-text strong {
+    font-family: var(--font-heading);
+    font-size: 16px;
+    color: var(--color-black);
+  }
+  .l1-proof {
+    align-self: start;
+    padding: 20px;
+    border-radius: 10px;
+    background: var(--color-surface);
+    border: 1px solid var(--lab-line);
+  }
+  @media (min-width: 768px) {
+    .l1-head {
+      padding: 32px 28px;
+    }
+    .l1-body {
+      grid-template-columns: 1.1fr 1fr;
+      gap: 28px;
+      padding: 28px;
+    }
+  }
+</style>

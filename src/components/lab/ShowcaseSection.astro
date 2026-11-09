@@ -1,0 +1,41 @@
+---
+import '../../styles/lab.css';
+import ShowcaseFeatured from './ShowcaseFeatured.astro';
+import ShowcaseCarousel from './ShowcaseCarousel.astro';
+import ShowcaseGrid from './ShowcaseGrid.astro';
+import ShowcaseZigzag from './ShowcaseZigzag.astro';
+import { labShowcase, type ShowcaseVariant } from '../../data/lab';
+
+interface Props {
+  variant?: ShowcaseVariant;
+  /** Render every variant (hidden except `variant`) so the Tweak panel can switch between them. */
+  all?: boolean;
+}
+
+const { variant = 's2', all = false } = Astro.props;
+
+const variants = [
+  { id: 's1', Component: ShowcaseFeatured },
+  { id: 's2', Component: ShowcaseCarousel },
+  { id: 's3', Component: ShowcaseGrid },
+  { id: 's4', Component: ShowcaseZigzag },
+] as const;
+const shown = all ? variants : variants.filter((v) => v.id === variant);
+const hasProjects = labShowcase.projects.length > 0;
+---
+
+{
+  hasProjects && (
+    <section id="labShowcase" class="lab-scope" hidden={variant === 'none'}>
+      <header class="lab-head">
+        <h3 class="lab-title">{labShowcase.name}</h3>
+        <p class="lab-desc">{labShowcase.description}</p>
+      </header>
+      {shown.map(({ id, Component }) => (
+        <div data-showcase-variant={id} hidden={id !== variant}>
+          <Component showcase={labShowcase} />
+        </div>
+      ))}
+    </section>
+  )
+}

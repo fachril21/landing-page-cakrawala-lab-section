@@ -1,0 +1,111 @@
+/* Shared tokens and primitives for the Lab section and Showcase (scoped to .lab-scope). */
+.lab-scope {
+  --lab-blue: var(--color-dark-bg-dark);
+  --lab-blue-2: #0b617f;
+  --lab-gold: var(--color-accent-yellow);
+  --lab-ink: var(--color-grey-800);
+  --lab-line: var(--color-grey-200);
+  --lab-tint: #dcf5fb;
+  --lab-on-blue: #cfe6ee;
+  width: 100%;
+  scroll-margin-top: 100px;
+}
+.lab-scope [hidden],
+.lab-scope[hidden] {
+  display: none !important;
+}
+.lab-scope ul,
+.lab-scope ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lab-title {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 1.2;
+  color: var(--lab-blue);
+}
+.lab-desc {
+  margin-top: 10px;
+  max-width: 62ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--lab-ink);
+}
+.lab-h4 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1.3;
+  color: var(--color-black);
+}
+.lab-head {
+  margin-bottom: 20px;
+}
+.lab-icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  background: var(--lab-tint);
+  color: var(--lab-blue);
+}
+.lab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  border: 1px solid var(--lab-blue);
+  color: var(--lab-blue);
+  background: transparent;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+.lab-btn:hover,
+.lab-btn:focus-visible {
+  background: var(--lab-blue);
+  color: #fff;
+}
+.lab-btn:focus-visible {
+  outline: 2px solid var(--lab-gold);
+  outline-offset: 2px;
+}
+.lab-btn > div {
+  display: inline-flex;
+  font-size: 16px;
+}
+.lab-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  background: var(--lab-tint);
+  object-fit: cover;
+}
+@media (min-width: 1024px) {
+  .lab-title {
+    font-size: 34px;
+  }
+  .lab-desc {
+    font-size: 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-scope * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

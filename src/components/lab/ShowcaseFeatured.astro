@@ -1,0 +1,135 @@
+---
+import Icon from '../Icon.astro';
+import type { LabShowcase } from '../../data/lab';
+
+interface Props {
+  showcase: LabShowcase;
+}
+const { showcase } = Astro.props;
+const [featured, ...rest] = showcase.projects;
+---
+
+<div class="s1">
+  <article class="s1-feat" data-project-index="0">
+    <img
+      class="lab-photo"
+      src={featured.image.src}
+      alt={featured.image.alt}
+      width={featured.image.width}
+      height={featured.image.height}
+      loading="lazy"
+      decoding="async"
+    />
+    <div class="s1-feat-body">
+      <h4 class="s1-feat-title">{featured.title}</h4>
+      <p class="s1-text">{featured.description}</p>
+      <a class="lab-btn" href={featured.url}>
+        {showcase.ctaLabel}
+        <Icon icon="solar:arrow-right-up-linear" />
+      </a>
+    </div>
+  </article>
+
+  <ul class="s1-list">
+    {
+      rest.map((p, i) => (
+        <li class="s1-row" data-project-index={i + 1}>
+          <img
+            class="lab-photo s1-thumb"
+            src={p.image.src}
+            alt={p.image.alt}
+            width={p.image.width}
+            height={p.image.height}
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="s1-row-body">
+            <h4 class="s1-row-title">{p.title}</h4>
+            <p class="s1-text">{p.description}</p>
+          </div>
+          <a class="lab-btn s1-row-btn" href={p.url}>
+            {showcase.ctaLabel}
+            <Icon icon="solar:arrow-right-up-linear" />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</div>
+
+<style>
+  .s1 {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+  .s1-feat {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .s1-feat-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    justify-content: center;
+  }
+  .s1-feat-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--color-black);
+  }
+  .s1-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--lab-ink);
+  }
+  .s1-list {
+    border-top: 1px solid var(--lab-line);
+  }
+  .s1-row {
+    display: grid;
+    grid-template-columns: 88px 1fr;
+    gap: 14px;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--lab-line);
+  }
+  .s1-thumb {
+    aspect-ratio: 4 / 3;
+  }
+  .s1-row-title {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 17px;
+    line-height: 1.3;
+    color: var(--color-black);
+  }
+  .s1-row-body .s1-text {
+    margin-top: 4px;
+    font-size: 14px;
+  }
+  .s1-row-btn {
+    grid-column: 2;
+    justify-self: start;
+  }
+  @media (min-width: 1024px) {
+    .s1-feat {
+      grid-template-columns: 7fr 5fr;
+      gap: 32px;
+    }
+    .s1-feat-title {
+      font-size: 28px;
+    }
+    .s1-row {
+      grid-template-columns: 120px 1fr auto;
+      gap: 20px;
+    }
+    .s1-row-btn {
+      grid-column: auto;
+    }
+  }
+</style>
