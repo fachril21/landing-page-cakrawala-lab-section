@@ -1,0 +1,41 @@
+---
+import '../styles/typography.css';
+import '../styles/colors.css';
+import '../styles/toast.css';
+import '../styles/carousel-new.css';
+import '../styles/tailwind.css';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  noindex?: boolean;
+}
+
+const { title, description, canonical, noindex = false } = Astro.props;
+---
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" type="image/x-icon" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-icon.png" sizes="180x180" type="image/png" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="/fonts/plus-jakarta-sans.css" rel="stylesheet" media="print" onload="this.media = 'all';" />
+    <link href="/fonts/rubik.css" rel="stylesheet" media="print" onload="this.media = 'all';" />
+    <link href="/fonts/manrope.css" rel="stylesheet" media="print" onload="this.media = 'all';" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

@@ -1,0 +1,68 @@
+---
+/**
+ * Inline Iconify icon, rendered at build time.
+ * Mirrors the original <Iconify> React wrapper: a sized <div> whose
+ * `color` drives the SVG through `currentColor`.
+ */
+import { getIconData, iconToSVG, replaceIDs } from '@iconify/utils';
+import bx from '@iconify-json/bx/icons.json';
+import bxs from '@iconify-json/bxs/icons.json';
+import bxl from '@iconify-json/bxl/icons.json';
+import solar from '@iconify-json/solar/icons.json';
+import type { IconifyJSON } from '@iconify/types';
+
+interface Props {
+  icon?: string | null;
+  size?: string;
+  color?: string;
+  class?: string;
+  [key: `data-${string}`]: string | boolean | undefined;
+}
+
+const SETS: Record<string, IconifyJSON> = {
+  bx: bx as IconifyJSON,
+  bxs: bxs as IconifyJSON,
+  bxl: bxl as IconifyJSON,
+  solar: solar as IconifyJSON,
+};
+
+const { icon, size = '', color, class: extraClass, ...rest } = Astro.props;
+
+function renderSvg(name: string | null | undefined) {
+  if (!name) return null;
+  const [prefix, iconName] = name.split(':');
+  const set = SETS[prefix];
+  if (!set || !iconName) return null;
+  const data = getIconData(set, iconName);
+  if (!data) return null;
+  const { attributes, body } = iconToSVG(data, { height: '1em' });
+  return {
+    prefix,
+    viewBox: attributes.viewBox,
+    body: replaceIDs(body),
+  };
+}
+
+const svg = renderSvg(icon);
+const wrapperClass = [size, extraClass].filter(Boolean).join(' ');
+---
+
+<div class={wrapperClass} style={color ? `color:${color}` : undefined} {...rest}>
+  {
+    svg ? (
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        aria-hidden="true"
+        role="img"
+        class={`iconify iconify--${svg.prefix}`}
+        width="1em"
+        height="1em"
+        viewBox={svg.viewBox}
+        set:html={svg.body}
+      />
+    ) : (
+      <span />
+    )
+  }
+</div>

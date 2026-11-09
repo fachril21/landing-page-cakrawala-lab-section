@@ -1,0 +1,110 @@
+---
+import Icon from '../Icon.astro';
+import WhatsappLink from '../WhatsappLink.astro';
+import { jobOpportunity, program, REGISTER_URL } from '../../data/program';
+
+// Card slider settings from the original: 1.5 cards visible on desktop, 1.1 below 1024px, 10px gap.
+const VISIBLE = 1.5;
+const GAP = 10;
+const gapOffset = (GAP * (VISIBLE - 1)) / VISIBLE;
+const BUTTON_CLASS =
+  'relative z-1 overflow-hidden shadow-lg rounded-full p-3 border hover:bg-opacity-0 card-slider-button opacity-50 bg-[#DCF5FB] border-[#107F9D] text-[#107F9D] hover:text-[#107F9D]';
+---
+
+<section class="flex flex-col gap-2.5 w-full overflow-hidden" id="jobOpportunity">
+  <h3 class="font-bold text-2xl lg:text-[34px] font-heading text-cakrawala-blue">{jobOpportunity.title}</h3>
+  <p class="text-grey-800"></p>
+  <div class="flex flex-col gap-2.5">
+    <div class="w-full min-w-0" data-card-slider>
+      <div class="flex flex-col gap-2.5 relative items-center w-full min-w-0">
+        <div
+          class={`slider-scrollbar flex justify-stretch overflow-x-auto snap-x snap-mandatory px-1 pb-5 scroll-smooth gap-[${GAP}px] w-full w-full max-w-full lg:max-w-[calc(1040px_-_40px_-_245px)]`}
+          data-card-slider-track
+        >
+          {
+            jobOpportunity.items.map((job) => (
+              <div class="job-card-slot" style={`width:calc(var(--job-card-width) - ${gapOffset}px);flex-shrink:0`}>
+                <div class="h-full">
+                  <div class="flex flex-col gap-2.5 bg-cakrawala-blue p-5 text-grey-100 rounded-[10px] h-full bg-[url(/images/program/bg-job-opportunity.png)] bg-no-repeat bg-left bg-cover">
+                    <div class="flex flex-row gap-2.5">
+                      <Icon icon={null} size="text-[24px]" />
+                      <p class="font-bold font-heading text-base">{job.title}</p>
+                    </div>
+                    <div class="program-job-scrollbar font-manrope text-sm">
+                      <p>{job.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <div class="flex flex-row items-center justify-between gap-2.5 w-full">
+          <div class="lg:block">
+            <button class={`${BUTTON_CLASS} right-slide`} data-card-slider-prev>
+              <Icon icon="solar:arrow-left-broken" size="text-[20px]" color="notstyle" />
+            </button>
+          </div>
+          <div class="lg:block">
+            <button class={`${BUTTON_CLASS} left-slide`} data-card-slider-next>
+              <Icon icon="solar:arrow-right-broken" size="text-[20px]" color="notstyle" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-row items-center self-center gap-2.5 w-full lg:w-fit mt-2">
+      <a href={REGISTER_URL} target="_blank" style="text-decoration:none" class="w-1/2 lg:w-fit button-register-admission">
+        <button
+          id="button-cosultation-bootcamp"
+          class="w-full bg-gold hover:bg-opacity-80 px-4 py-[13px] rounded-[16px] text-white lg:text-base text-xs font-bold"
+        >
+          Daftar Sekarang
+        </button>
+      </a>
+      <div class="w-1/2 lg:w-fit">
+        <WhatsappLink message={program.whatsappMessage}>
+          <button
+            id="button-cosultation-bootcamp"
+            class="w-full lg:w-fit bg-white border-2 border-gold hover:bg-accent-100 px-4 py-[10px] rounded-[16px] text-gold lg:text-base text-xs font-bold button-cosultation-admission flex items-center justify-center gap-[5px]"
+          >
+            <div class="flex flex-col lg:flex-row items-center w-full gap-2.5">
+              <div class="hidden lg:block">
+                <Icon icon="bxl:whatsapp" size="text-[18px]" />
+              </div>
+              <p class="text-center">Hubungi Tim Admisi</p>
+            </div>
+          </button>
+        </WhatsappLink>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .job-card-slot {
+    --job-card-width: calc(100% / 1.5);
+  }
+  @media (max-width: 1023px) {
+    .job-card-slot {
+      --job-card-width: calc(100% / 1.1);
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-card-slider]').forEach((slider) => {
+    const track = slider.querySelector<HTMLElement>('[data-card-slider-track]');
+    if (!track) return;
+    const step = () => {
+      const visible = window.innerWidth < 1024 ? 1.1 : 1.5;
+      return (track.offsetWidth / 100) * (100 / visible);
+    };
+    slider
+      .querySelector('[data-card-slider-prev]')
+      ?.addEventListener('click', () => track.scrollBy({ left: -step(), behavior: 'smooth' }));
+    slider
+      .querySelector('[data-card-slider-next]')
+      ?.addEventListener('click', () => track.scrollBy({ left: step(), behavior: 'smooth' }));
+  });
+</script>

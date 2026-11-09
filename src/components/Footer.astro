@@ -1,0 +1,97 @@
+---
+import Icon from './Icon.astro';
+import { LOGO_URL } from '../data/program';
+
+const campuses = [
+  {
+    name: 'Cakrawala University – Sudirman Campus',
+    address:
+      'The Landmark Center, Jl. Jenderal Sudirman No.Kav 1 Lantai 9, RT.3/RW.3, Setia Budi, Kecamatan Setiabudi, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12910',
+  },
+  {
+    name: 'Cakrawala University – Kemang Campus',
+    address:
+      'Jl. Kemang Timur No.1, RT.14/RW.8, Pejaten Bar., Ps. Minggu, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12510',
+  },
+];
+
+const socials = [
+  { href: 'https://www.tiktok.com/@cakrawalauniversity', icon: 'bxl:tiktok' },
+  { href: 'https://twitter.com/CakrawalaUniv', icon: 'bxl:twitter' },
+  { href: 'https://www.instagram.com/cakrawalauniversity/', icon: 'bxl:instagram-alt' },
+];
+
+// Two columns on desktop; on mobile the links flow as one list in `order`.
+const linkColumns = [
+  [
+    { title: 'Akademik', href: '/akademik', order: 'order-1' },
+    { title: 'Admisi', href: '/admisi', order: 'order-2' },
+    { title: 'Karier', href: '/job-portal', order: 'order-5' },
+  ],
+  [
+    { title: 'Berita', href: '/berita', order: 'order-3' },
+    { title: 'Tentang Kami', href: '/tentang-kami', order: 'order-4' },
+  ],
+];
+
+const GOLD = '#D3B468';
+---
+
+<section class="bg-grey-200 px-5 py-10 lg:px-20 lg:py-5">
+  <div class="max-w-[1280px] mx-auto flex flex-col gap-5">
+    <div class="flex flex-col items-center gap-5 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
+      <div class="flex flex-col gap-5 items-center lg:items-start lg:w-[733px]">
+        <a href="/">
+          <img alt="Logo Cakrawala Black" src={LOGO_URL} class="h-[44px] object-contain" />
+        </a>
+        {
+          campuses.map((campus) => (
+            <div class="flex flex-col gap-[5px] items-center lg:items-start">
+              <p class="font-bold text-black text-sm leading-[21px] tracking-[0.175px] text-center lg:text-start lg:w-[443px]">
+                {campus.name}
+              </p>
+              <p class="font-normal text-black text-sm leading-[21px] tracking-[0.175px] text-center lg:text-start lg:w-[443px]">
+                {campus.address}
+              </p>
+            </div>
+          ))
+        }
+        <div class="flex gap-2.5">
+          {
+            socials.map((social) => (
+              <a href={social.href} target="_blank">
+                <div class="cursor-pointer items-center flex flex-col">
+                  <div class="flex items-center">
+                    <Icon icon={social.icon} size="text-[24px]" color={GOLD} />
+                  </div>
+                </div>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+      <div class="flex flex-col items-center gap-2.5 lg:flex-row lg:items-start lg:gap-10 lg:w-[347px]">
+        {
+          linkColumns.map((column) => (
+            <div class="contents lg:flex lg:flex-1 lg:flex-col items-center lg:items-start gap-2.5">
+              {column.map((link) => (
+                <a href={link.href} rel="prefetch" class={`${link.order} lg:order-none`}>
+                  <div class="flex items-start gap-[5px]">
+                    <p class="font-semibold text-black text-base leading-[23px] tracking-[0.08px] whitespace-nowrap">
+                      {link.title}
+                    </p>
+                    <Icon icon="bx:right-arrow-alt" color={GOLD} size="text-[23px]" />
+                  </div>
+                </a>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+    <div class="w-full border-t-2 border-grey-400"></div>
+    <p class="text-grey-700 text-sm leading-[21px] tracking-[0.175px] text-center lg:text-start">
+      © 2023 Cakrawala University. All Rights Reserved.
+    </p>
+  </div>
+</section>

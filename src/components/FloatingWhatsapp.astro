@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+import WhatsappLink from './WhatsappLink.astro';
+import { REGISTER_URL } from '../data/program';
+---
+
+<div>
+  <button id="togglePopup" class="p-[10px] rounded-[10px] bg-accent fixed bottom-4 right-4 z-40">
+    <Icon icon="bxs:message-detail" color="#fff" size="text-2xl" />
+  </button>
+  <div
+    id="fixed-card"
+    class="fixed bottom-16 lg:right-16 right-4 border-2 border-gray-200 max-w-[400px] p-4 z-40 bg-white shadow-lg rounded-tl-lg hidden rounded-l-2xl rounded-r-2xl rounded-br-md animate-slideInFromRight"
+  >
+    <div class="flex flex-col gap-5">
+      <div class="flex items-start justify-between">
+        <p class="text-base font-bold">🎓 Dapatkan Informasi Admisi Cakrawala University Melalui WhatsApp!🎓</p>
+        <button id="close-btn" class="text-xl font-bold hover:text-gray-500 transition-colors p-1">
+          <Icon icon="bx:x" size="text-xl" color="#212934" />
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="w-full">
+          <WhatsappLink
+            message="Mau konsultasi tentang perkuliahan di Cakrawala University dong!"
+            class="btn-cta-whatsapp-float"
+          >
+            <button
+              id="wa-button-flloats"
+              class="btn-whatsapp bg-primary w-full text-white text-xs md:text-sm py-3 px-2 font-bold rounded-2xl gtm-register-button-floating-whatsapp flex items-center justify-center"
+            >
+              <div class="flex items-center gap-2">
+                <Icon icon="bxl:whatsapp" size="text-[23px]" color="white" />
+                <p>Konsultasi</p>
+              </div>
+            </button>
+          </WhatsappLink>
+        </div>
+        <a href={REGISTER_URL} target="_blank" class="button-register-admission-float">
+          <button
+            id="hortlist-button-float"
+            class="bg-white border-2 w-full border-primary text-primary py-3 px-2 flex-1 text-xs md:text-sm font-bold rounded-2xl text-center gtm-register-button-floating-shorlist btn-lead-form"
+          >
+            Daftar Sekarang
+          </button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const SHOW_DELAY_MS = 1000;
+  const card = document.getElementById('fixed-card');
+  setTimeout(() => card?.classList.remove('hidden'), SHOW_DELAY_MS);
+  document.getElementById('togglePopup')?.addEventListener('click', () => card?.classList.toggle('hidden'));
+  document.getElementById('close-btn')?.addEventListener('click', () => card?.classList.add('hidden'));
+</script>

@@ -1,0 +1,19 @@
+---
+import { whatsappUrl } from '../data/program';
+
+interface Props {
+  message: string;
+  class?: string;
+}
+
+const { message, class: className } = Astro.props;
+---
+
+<a
+  href={whatsappUrl(message)}
+  target="_blank"
+  style="text-decoration:none"
+  class={`w-full md:w-fit ${className || 'btn-cta-whatsapp'}`}
+>
+  <slot />
+</a>

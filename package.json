@@ -1,0 +1,19 @@
+{
+  "name": "landing-page-cakrawala",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@iconify-json/bx": "^1.2.3",
+    "@iconify-json/bxl": "^1.2.4",
+    "@iconify-json/bxs": "^1.2.3",
+    "@iconify-json/solar": "^1.2.14",
+    "@iconify/utils": "^3.1.7",
+    "astro": "^7.4.7"
+  }
+}

@@ -1,0 +1,42 @@
+---
+import Icon from '../Icon.astro';
+import { faq } from '../../data/program';
+---
+
+<div>
+  <section class="flex flex-col gap-5 items-start w-full" id="faq">
+    <h3 class="font-bold text-2xl lg:text-[34px] font-heading text-cakrawala-blue">{faq.title}</h3>
+    <p class="text-grey-800"></p>
+    <div class="flex flex-col gap-2.5 w-full">
+      {
+        faq.items.map((item) => (
+          <div
+            class="flex flex-col rounded-[10px] cursor-pointer w-full border-2 border-grey-400 overflow-hidden bg-grey-100"
+            data-faq
+          >
+            <div class="flex flex-row items-center justify-between px-5 py-5 gap-5 w-full bg-grey-100">
+              <p class="text-xl text-black font-rubik">{item.question}</p>
+              <div class="rounded-full border-2 border-grey-400 flex justify-center items-center p-2.5">
+                <Icon icon="bx:down-arrow-alt" color="#014860" size="text-[20px]" data-when-closed />
+                <Icon icon="bx:up-arrow-alt" color="#014860" size="text-[20px]" class="hidden" data-when-open />
+              </div>
+            </div>
+            <div class="py-5 px-5 bg-grey-100 border-t-2 border-grey-400 w-full hidden" data-faq-body>
+              <p class="text-base text-grey-800 font-jakarta">{item.answer}</p>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+</div>
+
+<script>
+  document.querySelectorAll('[data-faq]').forEach((item) => {
+    item.addEventListener('click', () => {
+      const open = item.querySelector('[data-faq-body]')?.classList.toggle('hidden') === false;
+      item.querySelector('[data-when-closed]')?.classList.toggle('hidden', open);
+      item.querySelector('[data-when-open]')?.classList.toggle('hidden', !open);
+    });
+  });
+</script>

@@ -1,0 +1,44 @@
+---
+import Icon from './Icon.astro';
+import WhatsappLink from './WhatsappLink.astro';
+import { program, REGISTER_URL } from '../data/program';
+---
+
+<div
+  class="pb-10 pt-10 lg:pb-[60px] lg:pt-[60px] flex items-center bg-header-program"
+  style={`--imageUrl: url(${program.heroImageUrl});`}
+>
+  <div class="max-w-[1040px] mx-auto px-5 w-full">
+    <div class="flex flex-col lg:flex-row items-center justify-between gap-5 lg:gap-10 w-full">
+      <div class="flex flex-col gap-[30px] text-white w-full">
+        <div class="flex flex-col gap-2.5 text-white w-full">
+          <h1 class="text-[34px] lg:text-[48px] leading-tight max-w-[600px] font-bold font-heading">{program.name}</h1>
+          <h2 class="text-base max-w-[550px] font-body">{program.description}</h2>
+          <div class="flex flex-row items-center gap-2.5 w-full lg:w-fit">
+            <a href={REGISTER_URL} target="_blank" style="text-decoration:none" class="w-1/2 lg:w-fit button-register-admission">
+              <button
+                id="wa-shortlist-on-page"
+                class="w-full bg-gold hover:bg-opacity-80 px-4 py-[13px] rounded-[16px] text-white lg:text-base text-xs font-bold"
+              >
+                Pelajari Lebih Lanjut
+              </button>
+            </a>
+            <div class="w-1/2 lg:w-fit">
+              <WhatsappLink message={program.whatsappMessage}>
+                <button
+                  id="wa-button-on-page"
+                  class="w-full lg:w-fit bg-white border-2 border-gold hover:bg-accent-100 px-4 py-[10px] rounded-[16px] text-gold lg:text-base text-xs font-bold button-cosultation-admission flex items-center justify-center gap-[5px]"
+                >
+                  <div class="hidden lg:block">
+                    <Icon icon="bxl:whatsapp" size="text-[18px]" />
+                  </div>
+                  Hubungi Tim Admisi
+                </button>
+              </WhatsappLink>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

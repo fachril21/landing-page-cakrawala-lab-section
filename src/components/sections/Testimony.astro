@@ -1,0 +1,28 @@
+---
+import { testimonies } from '../../data/program';
+---
+
+<div class="flex flex-col gap-2.5 items-start w-full" id="testimony">
+  <h3 class="font-bold text-2xl lg:text-[34px] font-heading text-cakrawala-blue">{testimonies.title}</h3>
+  <div class="flex w-full gap-5 overflow-x-auto program-testimony-scrollbar rounded-[10px]">
+    {
+      testimonies.items.map((item) => (
+        <div class="relative bg-white border border-grey-200 rounded-[20px] min-w-[360px] md:min-w-[444px] min-h-[400px] md:min-h-[350px] mb-2.5 overflow-hidden flex justify-center">
+          <div class="absolute bg-gradient-to-t from-cakrawala-blue-dark to-cakrawala-blue w-full h-[293px] md:h-[244px] top-0 rounded-[20px] pt-0 p-5 flex items-center z-0">
+            {/* The original template wraps the CMS quote in an extra pair of double quotes. */}
+            <p class="text-grey-100 leading-[23px] text-ellipsis overflow-hidden line-camp-[10] md:line-clamp-[8] italic">
+              {`"${item.quote}"`}
+            </p>
+          </div>
+          <div class="absolute rounded-full w-[69px] h-[69px] overflow-hidden bottom-[70px] border-[5px] border-white">
+            <img src={item.photo} alt="profile" class="object-cover w-full h-full" />
+          </div>
+          <div class="absolute w-full bottom-5 flex flex-col items-center gap-[2px]">
+            <p class="font-semibold text-black">{item.name}</p>
+            <p class="text-xs text-grey-800">{item.role}</p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</div>

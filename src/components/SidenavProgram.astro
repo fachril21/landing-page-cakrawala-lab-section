@@ -1,0 +1,145 @@
+---
+import { program, sidenavItems as defaultItems, REGISTER_URL } from '../data/program';
+
+interface Props {
+  items?: readonly { id: string; title: string }[];
+}
+const { items: sidenavItems = defaultItems } = Astro.props;
+
+const ITEM_BASE =
+  'px-4 py-[5px] lg:rounded-r-lg max-lg:border-b-2 text-grey-800 hover:text-cakrawala-blue hover:font-bold';
+const ITEM_IDLE = 'cursor-pointer border-grey400 transition-all ease-in-out duration-200 hover:border-cakrawala-blue';
+const variants = ['desktop', 'mobile', 'mobile-fixed'] as const;
+---
+
+<div class="lg:w-[245px] lg:flex-shrink-0" data-sidenav>
+  {
+    variants.map((variant) => {
+      const inner = (
+        <div class="flex flex-col lg:flex-col">
+          <div class="p-5 hidden lg:block">
+            <p class="text-cakrawala-blue text-xl font-bold">{program.name}</p>
+          </div>
+          <div class="flex lg:flex-col flex-row">
+            {sidenavItems.map((item) => (
+              <div class={`${ITEM_BASE} ${ITEM_IDLE} duration-300`} data-sidenav-item={item.id}>
+                <p class="lg:text-start text-center">{item.title}</p>
+              </div>
+            ))}
+          </div>
+          <div class="lg:block hidden p-5">
+            <a href={REGISTER_URL} target="_blank" style="text-decoration:none" class="w-full button-register-admission">
+              <button
+                id="btn-lead-form-admission"
+                class="bg-gold text-white w-full py-3 font-bold rounded-2xl gtm-register-button btn-lead-form text-sm"
+              >
+                DAFTAR SEKARANG
+              </button>
+            </a>
+          </div>
+        </div>
+      );
+      if (variant === 'desktop') {
+        return (
+          <div
+            style="top:100px"
+            class="z-10 lg:block hidden bg-grey-100 border-2 border-grey-200 rounded-xl min-w-[245px] max-w-full lg:max-w-[245px] mb-10 md:mb-0  max-h-full lg:max-h-[calc(100vh_-_188px)] overflow-y-auto show-scrollbar"
+            data-sidenav-desktop
+          >
+            {inner}
+          </div>
+        );
+      }
+      if (variant === 'mobile') {
+        return (
+          <div style="top:0px;transition:0.6s" class="lg:hidden static w-screen -mx-5 z-10 bg-grey-100 mb-5" data-sidenav-mobile>
+            <div class="flex overflow-x-auto whitespace-nowrap flex-nowrap no-scrollbar">{inner}</div>
+          </div>
+        );
+      }
+      return (
+        <div
+          style="top:0px;transition:0.6s;display:none"
+          class="lg:hidden fixed top-0 left-0 z-10 bg-grey-100 w-full mb-5"
+          data-sidenav-fixed
+        >
+          <div class="flex overflow-x-auto whitespace-nowrap flex-nowrap no-scrollbar">{inner}</div>
+        </div>
+      );
+    })
+  }
+</div>
+
+<script>
+  const NAV_OFFSET = 103;
+  const SECTION_END_MARGIN = 200;
+  const ACTIVE = ['border-cakrawala-blue', 'border-l-4', 'text-cakrawala-blue', 'font-bold'];
+  const IDLE = ['border-grey400', 'hover:border-cakrawala-blue'];
+  const ACTIVE_BG = 'linear-gradient(90deg, rgba(1, 72, 96, 0.2) 0%, rgba(1, 72, 96, 0) 100%)';
+
+  const wrapper = document.querySelector<HTMLElement>('[data-sidenav]');
+  const desktop = document.querySelector<HTMLElement>('[data-sidenav-desktop]');
+  const fixedMobile = document.querySelector<HTMLElement>('[data-sidenav-fixed]');
+  const mobileStatic = document.querySelector<HTMLElement>('[data-sidenav-mobile]');
+  const programSection = document.querySelector<HTMLElement>('#ProgramSection');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-sidenav-item]')];
+  const ids = [...new Set(items.map((el) => el.dataset.sidenavItem!))];
+
+  const scrollToSection = (id: string) => {
+    const target = document.getElementById(id);
+    const top = (target ? target.getBoundingClientRect().top : 0) + window.pageYOffset - 50;
+    window.scrollTo({ top, behavior: 'smooth' });
+  };
+  items.forEach((el) => el.addEventListener('click', () => scrollToSection(el.dataset.sidenavItem!)));
+
+  // Sticky positioning of the desktop sidebar (same rules as the original component).
+  const updateDesktopPosition = () => {
+    if (!wrapper || !desktop || !programSection) return;
+    const y = wrapper.getBoundingClientRect().top;
+    const nearSectionEnd = programSection.getBoundingClientRect().bottom < window.innerHeight - SECTION_END_MARGIN;
+    const isFixed = y < NAV_OFFSET && !nearSectionEnd;
+    const isAbsolute = !isFixed && y < 0;
+    desktop.classList.remove('static', 'lg:fixed', 'lg:absolute', 'lg:unset');
+    desktop.classList.add('static', isFixed ? 'lg:fixed' : isAbsolute ? 'lg:absolute' : 'lg:unset');
+  };
+
+  // Mobile: show the fixed copy once the in-flow bar scrolls past the top.
+  const updateMobileFixed = () => {
+    if (!wrapper || !fixedMobile) return;
+    fixedMobile.style.display = wrapper.getBoundingClientRect().top <= 0 ? '' : 'none';
+  };
+
+  // Highlight the section currently in view.
+  let activeIndex = -1;
+  const updateActive = () => {
+    const reversed = [...ids].reverse().findIndex((id) => {
+      const el = document.getElementById(id);
+      return el ? window.scrollY >= el.offsetTop - NAV_OFFSET : false;
+    });
+    const index = ids.length - reversed - 1;
+    if (index === activeIndex) return;
+    activeIndex = index;
+    items.forEach((el) => {
+      const isActive = el.dataset.sidenavItem === ids[index];
+      ACTIVE.forEach((c) => el.classList.toggle(c, isActive));
+      IDLE.forEach((c) => el.classList.toggle(c, !isActive));
+      el.style.background = isActive ? ACTIVE_BG : '';
+    });
+    // Keep the active tab centred in the horizontal mobile bar.
+    const bar = fixedMobile && fixedMobile.style.display !== 'none' ? fixedMobile : mobileStatic;
+    bar?.querySelector<HTMLElement>(`[data-sidenav-item="${ids[index]}"]`)?.scrollIntoView({
+      behavior: 'smooth',
+      inline: 'center',
+    });
+  };
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      updateDesktopPosition();
+      updateMobileFixed();
+      updateActive();
+    },
+    { passive: true },
+  );
+</script>

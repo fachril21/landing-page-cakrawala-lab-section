@@ -1,0 +1,57 @@
+---
+import Icon from '../Icon.astro';
+import { curriculum } from '../../data/program';
+---
+
+<section class="flex flex-col gap-2.5 items-start w-full" id="curriculum">
+  <h3 class="font-bold text-2xl lg:text-[34px] font-heading text-cakrawala-blue">{curriculum.title}</h3>
+  <div class="border-2 border-cakrawala-light-blue bg-cakrawala-light-blue rounded-[10px] w-full">
+    <div class="flex flex-col w-full">
+      {
+        curriculum.semesters.map((item, index) => (
+          <>
+            {index > 0 && <div class="h-[1px] w-full bg-white/50" />}
+            <div class="" data-curriculum>
+              <div class="flex flex-col">
+                <div
+                  class="px-2.5 lg:px-5 flex flex-row w-full justify-between cursor-pointer py-5 gap-5 items-center"
+                  data-curriculum-trigger
+                >
+                  <div class="flex flex-col">
+                    <h4 class="text-base lg:text-xl font-bold text-black font-rubik">Semester {item.semester}</h4>
+                  </div>
+                  <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-black">
+                    <Icon icon="solar:alt-arrow-down-broken" size="text-[24px]" data-when-closed />
+                    <Icon icon="solar:alt-arrow-up-broken" size="text-[24px]" class="hidden" data-when-open />
+                  </div>
+                </div>
+                <div class="flex flex-col bg-white p-2.5 lg:p-5 rounded-b-[10px] hidden" data-curriculum-body>
+                  <div class="grid grid-cols-2 gap-2.5">
+                    {item.subjects.map((subject) => (
+                      <div class="flex items-center gap-5">
+                        <Icon icon="solar:book-bookmark-broken" size="text-[24px] text-grey-800" />
+                        <p class="text-sm text-grey-800 font-manrope">{subject}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll('[data-curriculum]').forEach((item) => {
+    const trigger = item.querySelector('[data-curriculum-trigger]');
+    const body = item.querySelector('[data-curriculum-body]');
+    trigger?.addEventListener('click', () => {
+      const open = body?.classList.toggle('hidden') === false;
+      item.querySelector('[data-when-closed]')?.classList.toggle('hidden', open);
+      item.querySelector('[data-when-open]')?.classList.toggle('hidden', !open);
+    });
+  });
+</script>

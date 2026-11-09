@@ -1,0 +1,461 @@
+---
+import Icon from './Icon.astro';
+import { LOGO_URL } from '../data/program';
+import { navs, academicCopy, languages, localePath, truncate } from '../data/navigation';
+
+const lang = 'id';
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const currentLanguage = languages.find((l) => l.value === lang)!;
+const MOBILE_SHADOW =
+  'shadow-[18px_119px_34px_0_rgba(0,0,0,0.00),11px_76px_31px_0_rgba(0,0,0,0.01),6px_43px_26px_0_rgba(0,0,0,0.05),3px_19px_19px_0_rgba(0,0,0,0.09),1px_5px_11px_0_rgba(0,0,0,0.10)]';
+const DROPDOWN_SHADOW = 'box-shadow:0px 4px 20px 0px rgba(33, 41, 52, 0.15)';
+const schoolIcon = (index: number) => (index === 0 ? 'bxs:bar-chart-square' : 'bx:code-block');
+---
+
+<div class="top-0 sticky w-full z-50" id="navbar" style="transition:0.5s">
+  <nav class="min-h-[40px] py-5 lg:py-5 bg-grey-100">
+    <div class="max-w-[1360px] mx-auto flex items-center justify-between px-5 lg:px-8">
+      <a class="navbar-brand" href="/" rel="prefetch">
+        <img alt="Logo Cakrawala Black" src={LOGO_URL} class="max-h-[28px] lg:max-h-[44px] object-contain" />
+      </a>
+
+      {/* Desktop menu (viewport wider than 1000px) */}
+      <div class="nav-desktop flex items-center gap-5">
+        {
+          navs.map((nav) => (
+            <div class="flex items-center gap-[5px]">
+              {nav.schools ? (
+                <div class="group/show relative" data-academic-menu>
+                  <div class="flex gap-1 items-center cursor-pointer p-2.5">
+                    <p class="text-black font-semibold">{nav.title}</p>
+                    <div class="mt-[-2px]">
+                      <Icon color="black" size="text-[23px]" icon="bx:chevron-down" />
+                    </div>
+                  </div>
+                  <div
+                    class="invisible opacity-0 group-hover/show:visible group-hover/show:opacity-100"
+                    style="transition:opacity 200ms, visibility 200ms"
+                  >
+                    <div
+                      class="min-w-[764px] z-10 rounded-[10px] left-0 top-11 absolute flex flex-col bg-white overflow-hidden"
+                      style={DROPDOWN_SHADOW}
+                    >
+                      <div class="flex flex-col">
+                        <div class="flex flex-row w-full relative">
+                          <div class="flex flex-col z-[2] p-2.5 gap-2.5">
+                            {nav.schools.map((school, index) => (
+                              <div
+                                class:list={[
+                                  'cursor-pointer p-2.5 rounded-[10px] flex gap-2.5 w-[362px]',
+                                  { 'bg-[#F1F2F4]': index === 0 },
+                                ]}
+                                data-school-tab={index}
+                              >
+                                <Icon color="primary" size="text-[23px]" icon={schoolIcon(index)} />
+                                <div class="flex flex-col gap-[5px]">
+                                  <div class="text-black font-medium flex justify-between">
+                                    <p>{school.title}</p>
+                                    <div class={index === 0 ? 'inline' : 'hidden'} data-school-arrow>
+                                      <Icon color="black" size="text-[23px]" icon="solar:arrow-right-broken" />
+                                    </div>
+                                  </div>
+                                  <p class="text-grey-700 text-sm">{truncate(school.description, 100)}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          <div class="z-[1] border-l-2 border-grey-200 px-5 py-2.5 w-full">
+                            {nav.schools.map((school, index) => (
+                              <div
+                                class:list={['flex flex-col gap-5 max-h-[338px] overflow-auto', { hidden: index !== 0 }]}
+                                data-school-panel={index}
+                              >
+                                <p class="text-grey-700 text-sm">Program Studi</p>
+                                {school.departments.map((department) => (
+                                  <a
+                                    class="group/nav-child"
+                                    rel="prefetch"
+                                    href={localePath(lang, `/program/${department.slug}`)}
+                                  >
+                                    <div class="flex flex-row gap-2.5 items-center">
+                                      <div class="flex flex-col">
+                                        <div class="flex flex-row items-center gap-[5px]">
+                                          <p class="font-medium text-black group-hover/nav-child:text-primary">
+                                            {department.title}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </a>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div class="flex bg-[#F1F2F4] p-5 border-t-2 border-grey-200">
+                          <div class="flex flex-col gap-2.5 max-w-[545px]">
+                            <p class="text-xl font-semibold">{academicCopy.title}</p>
+                            <p class="text-grey-700 text-sm">{academicCopy.description}</p>
+                          </div>
+                          <div class="flex flex-1 items-center justify-end">
+                            <a href={localePath(lang, '/akademik')} rel="prefetch">
+                              <div class="flex items-center gap-2 bg-primary rounded-[12px] px-4 py-3">
+                                <p class="text-white text-sm font-medium">{academicCopy.button}</p>
+                                <Icon icon="solar:arrow-right-broken" size="text-[18px]" color="white" />
+                              </div>
+                            </a>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : nav.child ? (
+                <div class="group/show relative">
+                  <div class="flex gap-1 items-center cursor-pointer p-2.5">
+                    <p class="text-black font-semibold">{nav.title}</p>
+                    <div class="mt-[-2px]">
+                      <Icon color="black" size="text-[23px]" icon="bx:chevron-down" />
+                    </div>
+                  </div>
+                  <div
+                    class="invisible opacity-0 group-hover/show:visible group-hover/show:opacity-100"
+                    style="transition:opacity 200ms, visibility 200ms"
+                  >
+                    <div
+                      class="min-w-[300px] z-10 rounded-[10px] left-0 top-11 absolute flex flex-col bg-white overflow-hidden p-2.5"
+                      style={DROPDOWN_SHADOW}
+                    >
+                      {nav.child.map((child) => (
+                        <a href={child.link} rel="prefetch" class="p-2.5 text-black hover:text-primary font-medium">
+                          {child.title}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a href={nav.link} rel="prefetch" class="p-2.5">
+                  <p class="text-black font-semibold">{nav.title}</p>
+                </a>
+              )}
+            </div>
+          ))
+        }
+      </div>
+
+      {/* Mobile menu (viewport 1000px and below) */}
+      <div class="nav-mobile flex items-center gap-3">
+        <div>
+          <div data-mobile-open>
+            <Icon icon="bx:menu" size="text-[24px]" color="black" />
+          </div>
+          <div class="invisible opacity-0" style="transition:opacity 600ms, visibility 600ms" data-mobile-menu>
+            <div class="fixed inset-0 bg-[#F8F7F3] z-[100] flex flex-col items-start overflow-hidden">
+              <div
+                class={`relative z-20 flex h-[68px] px-5 justify-between items-center shrink-0 self-stretch bg-[#F8F7F3] ${MOBILE_SHADOW}`}
+              >
+                <img alt="Logo Cakrawala" src={LOGO_URL} class="max-h-[28px] object-contain" />
+                <div class="cursor-pointer" data-mobile-close>
+                  <Icon icon="solar:close-square-outline" size="text-[32px]" color="#212934" />
+                </div>
+              </div>
+              <div
+                class="relative z-10 flex py-[10px] px-5 flex-col items-start flex-1 self-stretch bg-[#F8F7F3] overflow-auto"
+              >
+                {
+                  navs.map((nav) => (
+                    <div class="self-stretch">
+                      {nav.schools ? (
+                        <div class="flex flex-col self-stretch" data-collapse>
+                          <div
+                            class="flex h-16 py-5 px-0 items-center gap-[10px] self-stretch border-b-2 border-[#E1E7EC] cursor-pointer"
+                            data-collapse-trigger
+                          >
+                            <h1 class="flex-1 text-grey-700 font-rubik text-base font-medium tracking-[0.024px]">
+                              {nav.title}
+                            </h1>
+                            <Icon icon="solar:alt-arrow-down-linear" size="text-[24px]" color="grey-700" data-when-closed />
+                            <Icon
+                              icon="solar:alt-arrow-up-linear"
+                              size="text-[24px]"
+                              color="grey-700"
+                              class="hidden"
+                              data-when-open
+                            />
+                          </div>
+                          <div
+                            class="overflow-hidden"
+                            style="max-height:0;opacity:0;transition:max-height 300ms ease, opacity 200ms ease"
+                            data-collapse-body
+                          >
+                            <div class="flex flex-col bg-white overflow-hidden rounded-[10px]" style={DROPDOWN_SHADOW}>
+                              {nav.schools.map((school, index) => (
+                                <div
+                                  class:list={['flex flex-col gap-5 p-3 border-grey-200 ', { 'border-t-2': index === 1 }]}
+                                  data-school-toggle
+                                >
+                                  <div class="flex justify-between w-full " data-school-toggle-trigger>
+                                    <div class="flex gap-5">
+                                      <Icon color="primary" size="text-[25px]" icon={schoolIcon(index)} />
+                                      <p class="text-black font-medium">{school.title}</p>
+                                    </div>
+                                    <Icon icon="bx:chevron-down" size="text-[21px]" color="grey-700" data-when-closed />
+                                    <Icon
+                                      icon="bx:chevron-up"
+                                      size="text-[21px]"
+                                      color="grey-700"
+                                      class="hidden"
+                                      data-when-open
+                                    />
+                                  </div>
+                                  <div class="relative flex flex-col gap-7 hidden" data-school-toggle-body>
+                                    <div class=" absolute w-[1px] h-full bg-grey-200 rounded-full -top-[10px] left-12" />
+                                    {school.departments.map((department) => (
+                                      <a
+                                        class="group/nav-child"
+                                        rel="prefetch"
+                                        href={localePath(lang, `/program/${department.slug}`)}
+                                      >
+                                        <div class="flex flex-row gap-2.5 items-center pl-[65px]">
+                                          <div class="flex flex-col">
+                                            <div class="relative flex flex-row items-center gap-[5px]">
+                                              <div class="absolute bg-grey-200 w-2 h-[1px] -left-[17px] rounded-r-full" />
+                                              <p class="font-medium text-grey-700 text-sm group-hover/nav-child:text-primary">
+                                                {department.title}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </a>
+                                    ))}
+                                  </div>
+                                </div>
+                              ))}
+                              <div class="flex flex-col gap-2.5 p-5 bg-grey-100 border-t-2 border-grey-200">
+                                <h1 class="text-black text-xl font-semibold ">{academicCopy.title}</h1>
+                                <p class="text-grey-700 text-sm">{academicCopy.description}</p>
+                                <div class="flex">
+                                  <a
+                                    href={localePath(lang, '/akademik')}
+                                    rel="prefetch"
+                                    class="flex items-center gap-2 border-2 border-primary rounded-[12px] px-4 py-3"
+                                  >
+                                    <p class="text-primary text-sm font-semibold">{academicCopy.button}</p>
+                                    <Icon icon="solar:arrow-right-broken" size="text-[18px]" color="primary" />
+                                  </a>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ) : nav.child ? (
+                        <div class="flex flex-col self-stretch border-b-2 border-[#E1E7EC]" data-collapse>
+                          <div
+                            class="flex h-16 py-5 px-0 items-center gap-[10px] self-stretch cursor-pointer"
+                            data-collapse-trigger
+                          >
+                            <h1 class="flex-1 text-grey-700 font-rubik text-base font-medium tracking-[0.024px]">
+                              {nav.title}
+                            </h1>
+                            <Icon icon="solar:alt-arrow-down-linear" size="text-[24px]" color="grey-700" data-when-closed />
+                            <Icon
+                              icon="solar:alt-arrow-up-linear"
+                              size="text-[24px]"
+                              color="grey-700"
+                              class="hidden"
+                              data-when-open
+                            />
+                          </div>
+                          <div
+                            class="overflow-hidden"
+                            style="max-height:0;opacity:0;transition:max-height 300ms ease, opacity 200ms ease"
+                            data-collapse-body
+                          >
+                            <div class="flex flex-col justify-center items-start gap-[10px] self-stretch pb-5">
+                              {nav.child.map((child) => (
+                                <a
+                                  href={child.link}
+                                  rel="prefetch"
+                                  class="flex p-[10px] items-center gap-[10px] self-stretch rounded-[10px] bg-grey-100 border border-transparent transition-all duration-200 hover:border-black"
+                                >
+                                  <h2 class="text-black font-rubik text-base font-medium tracking-[0.024px]">
+                                    {child.title}
+                                  </h2>
+                                </a>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <a
+                          href={nav.link}
+                          class="flex h-16 py-5 px-0 items-center gap-[10px] self-stretch border-b-2 border-[#E1E7EC]"
+                        >
+                          <h1 class="flex-1 text-[#6E7A8A] font-rubik text-base font-medium tracking-[0.024px]">
+                            {nav.title}
+                          </h1>
+                        </a>
+                      )}
+                    </div>
+                  ))
+                }
+              </div>
+              <div class="flex py-5 px-5 justify-between items-center self-stretch">
+                {
+                  languages.map((language) => (
+                    <a href={localePath(language.value, pathname)} class="mx-auto">
+                      <div class="flex items-center gap-1">
+                        <img src={language.imageUrl} alt="Language Image" height="22px" width="auto" />
+                        <p class="text-sm text-grey-800">{language.label}</p>
+                      </div>
+                    </a>
+                  ))
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hidden lg:block">
+        <div class="group/show">
+          <div class="flex gap-1 items-center cursor-pointer p-2.5">
+            <img alt="Language Image" src={currentLanguage.imageUrl} />
+            <p class="text-black font-semibold uppercase">{currentLanguage.label}</p>
+            <div class="mt-[-2px]">
+              <Icon color="black" size="text-[23px]" icon="bx:chevron-down" />
+            </div>
+          </div>
+          <div
+            class="invisible opacity-0 group-hover/show:visible group-hover/show:opacity-100"
+            style="transition:opacity 200ms, visibility 200ms"
+          >
+            <div
+              class="min-w-[100px] z-10 p-[5px] rounded-[10px] top-[64px] absolute flex flex-col bg-white shadow"
+              style={DROPDOWN_SHADOW}
+            >
+              {
+                languages.map((language) => (
+                  <a href={localePath(language.value, pathname)}>
+                    <div class="flex gap-1 items-center cursor-pointer p-2.5">
+                      <img alt="Language Image" src={language.imageUrl} />
+                      <p class="text-black font-semibold uppercase">{language.label}</p>
+                    </div>
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</div>
+
+<style is:global>
+  /* The original swaps desktop/mobile navigation when window.innerWidth > 1000. */
+  .nav-desktop {
+    display: none;
+  }
+  @media (min-width: 1001px) {
+    .nav-desktop {
+      display: flex;
+    }
+    .nav-mobile {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const swapIcons = (root: Element, open: boolean) => {
+    root.querySelector(':scope > [data-when-closed]')?.classList.toggle('hidden', open);
+    root.querySelector(':scope > [data-when-open]')?.classList.toggle('hidden', !open);
+  };
+
+  // Sticky navbar: hides after scrolling past 200px, reappears when scrolling up.
+  const HIDE_AFTER_PX = 200;
+  const navbar = document.getElementById('navbar');
+  let lastScrollY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY || document.documentElement.scrollTop;
+    if (navbar && y > HIDE_AFTER_PX) navbar.style.top = '-150px';
+    if (navbar && y < lastScrollY) navbar.style.top = '0';
+    lastScrollY = y;
+  });
+
+  // Desktop "Akademik" mega menu: clicking a school shows its programmes.
+  document.querySelectorAll('[data-academic-menu]').forEach((menu) => {
+    const tabs = menu.querySelectorAll<HTMLElement>('[data-school-tab]');
+    const panels = menu.querySelectorAll<HTMLElement>('[data-school-panel]');
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const active = tab.dataset.schoolTab;
+        tabs.forEach((t) => {
+          const isActive = t.dataset.schoolTab === active;
+          t.classList.toggle('bg-[#F1F2F4]', isActive);
+          const arrow = t.querySelector('[data-school-arrow]');
+          arrow?.classList.toggle('inline', isActive);
+          arrow?.classList.toggle('hidden', !isActive);
+        });
+        panels.forEach((p) => p.classList.toggle('hidden', p.dataset.schoolPanel !== active));
+      });
+    });
+  });
+
+  // Mobile full-screen menu with body scroll lock.
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  let savedScrollY = 0;
+  const setMenuOpen = (open: boolean) => {
+    if (!menu) return;
+    menu.classList.toggle('visible', open);
+    menu.classList.toggle('opacity-100', open);
+    menu.classList.toggle('invisible', !open);
+    menu.classList.toggle('opacity-0', !open);
+    const body = document.body;
+    if (open) {
+      savedScrollY = window.scrollY;
+      document.documentElement.style.overflow = 'hidden';
+      Object.assign(body.style, {
+        overflow: 'hidden',
+        position: 'fixed',
+        top: `-${savedScrollY}px`,
+        left: '0',
+        right: '0',
+        width: '100%',
+      });
+    } else {
+      document.documentElement.style.overflow = '';
+      Object.assign(body.style, { overflow: '', position: '', top: '', left: '', right: '', width: '' });
+      window.scrollTo(0, savedScrollY);
+    }
+  };
+  document.querySelector('[data-mobile-open]')?.addEventListener('click', () => setMenuOpen(true));
+  document.querySelector('[data-mobile-close]')?.addEventListener('click', () => setMenuOpen(false));
+
+  // Mobile accordion sections (height measured when opened, as in the original).
+  document.querySelectorAll('[data-collapse]').forEach((section) => {
+    const trigger = section.querySelector<HTMLElement>('[data-collapse-trigger]');
+    const body = section.querySelector<HTMLElement>('[data-collapse-body]');
+    if (!trigger || !body) return;
+    let open = false;
+    trigger.addEventListener('click', () => {
+      open = !open;
+      body.style.maxHeight = open ? `${body.scrollHeight}px` : '0px';
+      body.style.opacity = open ? '1' : '0';
+      swapIcons(trigger, open);
+    });
+  });
+
+  // Schools inside the mobile "Akademik" section.
+  document.querySelectorAll('[data-school-toggle]').forEach((school) => {
+    const trigger = school.querySelector<HTMLElement>('[data-school-toggle-trigger]');
+    const body = school.querySelector<HTMLElement>('[data-school-toggle-body]');
+    if (!trigger || !body) return;
+    trigger.addEventListener('click', () => {
+      const open = body.classList.toggle('hidden') === false;
+      swapIcons(trigger, open);
+    });
+  });
+</script>
